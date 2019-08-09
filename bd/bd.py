@@ -4,8 +4,8 @@ from pymongo import MongoClient
 def start_bd():
     client = MongoClient()
     VK_db = client['VK_db']
-    skip_ids = VK_db['skip_ids211']
-    top10_users_mongo = VK_db['top10users211']
+    skip_ids = VK_db['skip_ids']
+    top10_users_mongo = VK_db['top10users']
     skip_ids.insert_one({'ID': [0]})
     return skip_ids, top10_users_mongo
 
