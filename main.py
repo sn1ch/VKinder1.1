@@ -88,18 +88,17 @@ class VK:
         print('...')
         offset = 0
         users_list = []
-        # while offset < res['count']:
-        while offset < 50:
+        while offset < res['count']:
             try:
                 users = api.users.search(city=city, sex=sex, age_from=age_line[0], age_to=age_line[1],
-                                         count=10, offset=offset)
+                                         count=1000, offset=offset)
                 print('...')
             except vk.exceptions.VkAPIError:
                 time.sleep(0.5)
                 continue
             for user in users['items']:
                 users_list.append(user['id'])
-            offset += 10
+            offset += 1000
         return users_list
 
     def count_groups_match_points(self, users_list):
@@ -123,7 +122,6 @@ class VK:
             try:
                 user = api.users.get(user_id=str(id), fields='interests, books, music')
                 print('...')
-                time.sleep(0.34)
                 try:
                     interests = \
                         (user[0]['music'] + ' ' + user[0]['interests'] + ' ' + user[0]['books']) \
@@ -162,11 +160,16 @@ class VK:
         to_write = []
         for id in top10_users:
             top_likes_list = []
-            photo = api.photos.get(owner_id=id, album_id='profile', extended='likes')
-            time.sleep(0.34)
-            user = api.users.get(user_ids=id)
-            print('...photo')
-            time.sleep(0.34)
+            try:
+                photo = api.photos.get(owner_id=id, album_id='profile', extended='likes')
+            except vk.exceptions.VkAPIError:
+                print('...')
+                time.sleep(0.5)
+            try:
+                user = api.users.get(user_ids=id)
+            except vk.exceptions.VkAPIError:
+                print('...photo')
+                time.sleep(0.5)
             top_3_photo = []
             for i in photo['items']:
                 top_likes_list.append(i['likes']['count'])
